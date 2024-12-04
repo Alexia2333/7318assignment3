@@ -1,0 +1,31 @@
+import os
+
+def clean_file(filepath):
+    try:
+        # 读取文件内容
+        with open(filepath, 'rb') as f:
+            content = f.read()
+        
+        # 检查是否包含null字节
+        if b'\x00' in content:
+            print(f"Cleaning {filepath}")
+            # 移除null字节
+            cleaned = content.replace(b'\x00', b'')
+            
+            # 写回文件
+            with open(filepath, 'wb') as f:
+                f.write(cleaned)
+            print(f"Cleaned {filepath}")
+        
+    except Exception as e:
+        print(f"Error processing {filepath}: {str(e)}")
+
+def clean_directory(directory):
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith('.py'):
+                filepath = os.path.join(root, file)
+                clean_file(filepath)
+
+# 使用当前目录作为起点
+clean_directory('.')
